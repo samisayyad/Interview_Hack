@@ -1,0 +1,250 @@
+{% extends "layout.html" %}
+
+{% block title %}Feedback{% endblock %}
+
+{% block head %}
+<style>
+    .score-card {
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .score-card:hover {
+        transform: translateY(-5px);
+    }
+    .score-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+    .score-label {
+        font-size: 1.1rem;
+        color: var(--bs-gray-600);
+    }
+    .tip-card {
+        margin-bottom: 15px;
+        border-left: 4px solid var(--bs-primary);
+        padding-left: 15px;
+    }
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+    .chart-container {
+        height: 300px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if not results %}
+    <div class="text-center mt-5">
+        <h2>No Interview Results Yet</h2>
+        <p class="lead">Complete an interview to see your feedback and analysis here.</p>
+        <a href="{{ url_for('interview') }}" class="btn btn-primary mt-3">
+            <i class="fas fa-play me-2"></i>Start Interview
+        </a>
+    </div>
+    {% else %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Your Interview Feedback</h1>
+            <p class="text-center lead">Review your performance and get insights to improve your interview skills.</p>
+        </div>
+    </div>
+
+    <!-- Overall Score Cards -->
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm score-card h-100 border-0">
+                <div class="card-body">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                        <i class="fas fa-comment-dots fa-2x text-primary"></i>
+                    </div>
+                    <div class="score-value text-primary">{{ results.speech.overall }}%</div>
+                    <div class="score-label">Speech Performance</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm score-card h-100 border-0">
+                <div class="card-body">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 d-inline-block mb-3">
+                        <i class="fas fa-user-tie fa-2x text-success"></i>
+                    </div>
+                    <div class="score-value text-success">{{ results.body_language.overall }}%</div>
+                    <div class="score-label">Body Language</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm score-card h-100 border-0">
+                <div class="card-body">
+                    <div class="rounded-circle bg-info bg-opacity-10 p-3 d-inline-block mb-3">
+                        <i class="fas fa-brain fa-2x text-info"></i>
+                    </div>
+                    <div class="score-value text-info">{{ results.content.overall }}%</div>
+                    <div class="score-label">Content Quality</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Results -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-comment-dots text-primary me-2"></i> Speech Analysis</h4>
+                    <div class="mt-4">
+                        <div class="progress-label">
+                            <span>Tone</span>
+                            <span>{{ results.speech.tone }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ results.speech.tone }}%" aria-valuenow="{{ results.speech.tone }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="progress-label">
+                            <span>Fluency</span>
+                            <span>{{ results.speech.fluency }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ results.speech.fluency }}%" aria-valuenow="{{ results.speech.fluency }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="progress-label">
+                            <span>Pronunciation</span>
+                            <span>{{ results.speech.pronunciation }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ results.speech.pronunciation }}%" aria-valuenow="{{ results.speech.pronunciation }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-user-tie text-success me-2"></i> Body Language Analysis</h4>
+                    <div class="mt-4">
+                        <div class="progress-label">
+                            <span>Posture</span>
+                            <span>{{ results.body_language.posture }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ results.body_language.posture }}%" aria-valuenow="{{ results.body_language.posture }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="progress-label">
+                            <span>Gestures</span>
+                            <span>{{ results.body_language.gestures }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ results.body_language.gestures }}%" aria-valuenow="{{ results.body_language.gestures }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="progress-label">
+                            <span>Eye Contact</span>
+                            <span>{{ results.body_language.eye_contact }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ results.body_language.eye_contact }}%" aria-valuenow="{{ results.body_language.eye_contact }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-brain text-info me-2"></i> Content Analysis</h4>
+                    <div class="mt-4">
+                        <div class="progress-label">
+                            <span>Relevance</span>
+                            <span>{{ results.content.relevance }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ results.content.relevance }}%" aria-valuenow="{{ results.content.relevance }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="progress-label">
+                            <span>Structure</span>
+                            <span>{{ results.content.structure }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ results.content.structure }}%" aria-valuenow="{{ results.content.structure }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                        <div class="progress-label">
+                            <span>Clarity</span>
+                            <span>{{ results.content.clarity }}%</span>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ results.content.clarity }}%" aria-valuenow="{{ results.content.clarity }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="fas fa-lightbulb text-warning me-2"></i> Tips for Improvement</h4>
+                    {% for tip in results.tips %}
+                    <div class="tip-card">
+                        <p class="mb-0"><i class="fas fa-check-circle text-success me-2"></i> {{ tip }}</p>
+                    </div>
+                    {% endfor %}
+                    <div class="mt-4">
+                        <a href="/chatbot" class="btn btn-primary w-100">
+                            <i class="fas fa-robot me-2"></i> Ask the Chatbot for More Tips
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Chart -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-chart-line me-2"></i> Performance Overview</h4>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Steps -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h3 class="mb-4">Ready to improve?</h3>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="/interview" class="btn btn-primary btn-lg px-4 gap-3">
+                    <i class="fas fa-redo me-2"></i> Try Again
+                </a>
+                <a href="/chatbot" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-question-circle me-2"></i> Ask for Help
+                </a>
+                <a href="{{ url_for('customer_feedback') }}" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="fas fa-star me-2"></i> Rate Your Experience
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/feedback.js') }}"></script>
+{% endblock %}

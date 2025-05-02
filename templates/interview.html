@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+
+{% block title %}Interview{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/avatar.css') }}">
+<style>
+    #video-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+    #user-video {
+        width: 100%;
+        transform: scaleX(-1); /* Mirror the video */
+    }
+    #question-container {
+        min-height: 100px;
+    }
+    .loading-indicator {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+    .controls {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .timer {
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 15px 0;
+    }
+    .record-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+    }
+    .question-number {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--bs-gray-600);
+    }
+    .status-indicator {
+        height: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    .interview-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .interview-row {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .interviewer-col {
+        flex: 1;
+    }
+    .interviewee-col {
+        flex: 1;
+    }
+    @media (max-width: 768px) {
+        .interview-row {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Practice Interview</h1>
+            <p class="text-center lead">Answer the questions as if you're in a real interview. We'll analyze your speech and body language to provide feedback.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Virtual Interviewer Avatar -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Your Virtual Interviewer</h5>
+                    <div id="avatar-container">
+                        <!-- Avatar will be rendered here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Question card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Current Question</h5>
+                    <div class="status-indicator bg-warning" id="question-status"></div>
+                    <div class="question-number mb-2" id="question-number">Question 0 of 5</div>
+                    <div id="question-container" class="p-3 bg-dark rounded mb-3">
+                        <p class="mb-0">Click "Start Interview" to begin the practice session.</p>
+                    </div>
+                    
+                    <div class="timer" id="timer">00:00</div>
+                    
+                    <div class="controls mb-3">
+                        <button id="start-btn" class="btn btn-primary">
+                            <i class="fas fa-play-circle me-2"></i> Start Interview
+                        </button>
+                        <button id="record-btn" class="btn btn-danger record-btn" disabled>
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button id="next-btn" class="btn btn-secondary" disabled>
+                            <i class="fas fa-forward me-2"></i> Next
+                        </button>
+                    </div>
+                    
+                    <div class="progress mb-3">
+                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="loading-indicator" id="loading-indicator">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Analyzing your response...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <!-- User Camera -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Your Camera</h5>
+                    <div class="status-indicator bg-danger" id="camera-status"></div>
+                    <div id="video-container" class="mb-3">
+                        <video id="user-video" autoplay muted playsinline></video>
+                    </div>
+                    <div class="alert alert-info" id="camera-message">
+                        <i class="fas fa-info-circle me-2"></i> Please allow camera and microphone access when prompted.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Interview Tips -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Interview Tips</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-success me-2"></i> Speak clearly and at a moderate pace
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-success me-2"></i> Maintain good posture and eye contact
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-success me-2"></i> Use hand gestures naturally to emphasize points
+                        </li>
+                        <li class="list-group-item bg-transparent">
+                            <i class="fas fa-check-circle text-success me-2"></i> Structure your answers with examples
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <button id="finish-btn" class="btn btn-lg btn-success" disabled>
+                <i class="fas fa-check-circle me-2"></i> Finish Interview & Get Feedback
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/avatar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+{% endblock %}

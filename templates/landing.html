@@ -1,0 +1,172 @@
+{% extends "layout.html" %}
+
+{% block title %}Your Interview AI Assistant{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero section with animated background and logo -->
+<div class="landing-container">
+    <!-- Animated particle background -->
+    <div class="particle-container"></div>
+    
+    <div class="container">
+        <div class="row align-items-center hero-content">
+            <div class="col-lg-6">
+                <h1 class="hero-title">Your AI Interview Assistant</h1>
+                <p class="hero-subtitle" data-text="Master your next interview with real-time feedback on speech, body language, and content.">Master your next interview with real-time feedback on speech, body language, and content.</p>
+                <a href="/home" class="btn btn-primary btn-lg cta-button">Get Started <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+            <div class="col-lg-6">
+                <div class="avatar-container">
+                    <div class="avatar-circle"></div>
+                    <!-- SVG logo with animation -->
+                    <svg class="avatar-image" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
+                        <path fill="#4361ee" d="M256 64c17.7 0 32 14.3 32 32v128h-64V96c0-17.7 14.3-32 32-32zM112 96c17.7 0 32 14.3 32 32v128h-64V128c0-17.7 14.3-32 32-32zm288 0c17.7 0 32 14.3 32 32v128h-64V128c0-17.7 14.3-32 32-32z"/>
+                        <path fill="#7209b7" d="M0 224c0-17.7 14.3-32 32-32h448c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zm64 160c0-26.5 21.5-48 48-48h288c26.5 0 48 21.5 48 48v16c0 35.3-28.7 64-64 64H128c-35.3 0-64-28.7-64-64V384z"/>
+                        <circle cx="256" cy="352" r="32" fill="#f72585"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key features with animated cards -->
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h3>Speech Analysis</h3>
+                    <p>Get real-time feedback on your speaking pace, tone, clarity, and filler words to make your responses more impactful.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Body Language Coach</h3>
+                    <p>Our AI tracks your posture, gestures, and eye contact, helping you project confidence during your interviews.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Interview Chatbot</h3>
+                    <p>Practice with our AI interviewer and get personalized advice on how to improve your interview performance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll down arrow -->
+    <div class="scroll-arrow">
+        <a href="#benefits">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Benefits section -->
+<div id="benefits" class="benefits-section bg-dark">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="mb-4">Why Choose Our AI Interview Assistant?</h2>
+                <p class="lead">Join thousands of job seekers who improved their interview performance</p>
+            </div>
+        </div>
+        
+        <!-- Stats with animation -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number" data-count="87">0</div>
+                <div class="stat-label">% Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="5000">0</div>
+                <div class="stat-label">Users Helped</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="24">0</div>
+                <div class="stat-label">Industry Types</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="100">0</div>
+                <div class="stat-label">+ Practice Questions</div>
+            </div>
+        </div>
+        
+        <!-- Interactive features section -->
+        <div class="row mt-5">
+            <div class="col-12 text-center mb-5">
+                <h2>Interview Preparation Tools</h2>
+                <p class="lead">Everything you need to succeed in your next interview</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h4>Practice Interviews</h4>
+                    <p>Realistic simulations with our virtual interviewer in various industries.</p>
+                    <a href="/interview" class="btn btn-outline-primary mt-3">Start Practice</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Performance Analytics</h4>
+                    <p>Detailed feedback and metrics to track your improvement over time.</p>
+                    <a href="/feedback" class="btn btn-outline-primary mt-3">View Feedback</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <h4>Interview Chatbot</h4>
+                    <p>Get answers to your interview-related questions and concerns.</p>
+                    <a href="/chatbot" class="btn btn-outline-primary mt-3">Ask Questions</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h4>Question Library</h4>
+                    <p>Access to common interview questions with suggested response strategies.</p>
+                    <a href="/home" class="btn btn-outline-primary mt-3">Explore Library</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Final CTA -->
+        <div class="row mt-5 py-5 text-center">
+            <div class="col-12">
+                <h2>Ready to Ace Your Next Interview?</h2>
+                <p class="lead mb-4">Start practicing with our AI Interview Assistant today</p>
+                <a href="/home" class="btn btn-primary btn-lg cta-button">
+                    <i class="fas fa-play-circle me-2"></i> Get Started Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+{% endblock %}

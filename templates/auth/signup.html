@@ -1,0 +1,254 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<style>
+    /* Additional styles specific to signup page */
+    .signup-features {
+        margin-top: 2rem;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        opacity: 0;
+        transform: translateX(-10px);
+        animation: feature-appear 0.5s ease-out forwards;
+    }
+    
+    .feature-item:nth-child(1) {
+        animation-delay: 0.8s;
+    }
+    
+    .feature-item:nth-child(2) {
+        animation-delay: 1s;
+    }
+    
+    .feature-item:nth-child(3) {
+        animation-delay: 1.2s;
+    }
+    
+    @keyframes feature-appear {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .feature-icon {
+        width: 30px;
+        height: 30px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--bs-primary);
+        font-size: 1.2rem;
+    }
+    
+    .feature-text {
+        font-size: 0.9rem;
+        color: var(--bs-light);
+        opacity: 0.9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <!-- Animated background particles -->
+    <div class="auth-background" id="auth-particles"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 my-5">
+                <div class="auth-card p-4 p-md-5">
+                    <!-- Auth header with animations -->
+                    <div class="auth-header text-center">
+                        <h1 class="auth-title">Create Your Account</h1>
+                        <p class="auth-subtitle">Join AI Interview Assistant to ace your next interview</p>
+                    </div>
+                    
+                    <!-- Display flash messages if any -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <div class="row">
+                        <div class="col-md-7">
+                            <!-- Signup form with animations -->
+                            <form method="post" novalidate>
+                                {{ form.hidden_tag() }}
+                                
+                                <div class="form-group">
+                                    {{ form.username.label(class="form-label") }}
+                                    {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Choose a username") }}
+                                    {% for error in form.username.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.email.label(class="form-label") }}
+                                    {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="Enter your email") }}
+                                    {% for error in form.email.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.first_name.label(class="form-label") }}
+                                            {{ form.first_name(class="form-control" + (" is-invalid" if form.first_name.errors else ""), placeholder="Your first name") }}
+                                            {% for error in form.first_name.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form.last_name.label(class="form-label") }}
+                                            {{ form.last_name(class="form-control" + (" is-invalid" if form.last_name.errors else ""), placeholder="Your last name") }}
+                                            {% for error in form.last_name.errors %}
+                                                <div class="invalid-feedback">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.password.label(class="form-label") }}
+                                    {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Create a password") }}
+                                    {% for error in form.password.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ form.confirm_password.label(class="form-label") }}
+                                    {{ form.confirm_password(class="form-control" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Confirm your password") }}
+                                    {% for error in form.confirm_password.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                {{ form.submit(class="btn btn-auth submit-btn") }}
+                            </form>
+                        </div>
+                        
+                        <div class="col-md-5">
+                            <div class="signup-features">
+                                <h4 class="text-light mb-3">Benefits of joining:</h4>
+                                
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        Track your interview performance over time
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        Compare your results with other candidates
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        Get personalized improvement recommendations
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-save"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        Save your interview histories and feedback
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="feature-text">
+                                        Access to our AI interview coach and virtual avatar
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Auth footer -->
+                    <div class="auth-footer mt-4">
+                        <p>Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create animated background particles
+        const particlesContainer = document.getElementById('auth-particles');
+        const colors = ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0'];
+        const particleCount = window.innerWidth < 768 ? 15 : 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('auth-particle');
+            
+            // Random size, position and color
+            const size = Math.random() * 15 + 5;
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const delay = Math.random() * 5;
+            const duration = Math.random() * 10 + 15;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}%`;
+            particle.style.top = `${posY}%`;
+            particle.style.backgroundColor = color;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Password strength meter
+        const passwordInput = document.getElementById('password');
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                // You could add password strength validation here in the future
+            });
+        }
+    });
+</script>
+{% endblock %}

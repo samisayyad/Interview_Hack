@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <!-- Animated background particles -->
+    <div class="auth-background" id="auth-particles"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 my-5">
+                <div class="auth-card p-4 p-md-5">
+                    <!-- Auth header with animations -->
+                    <div class="auth-header text-center">
+                        <h1 class="auth-title">Welcome Back</h1>
+                        <p class="auth-subtitle">Sign in to continue to your AI Interview Assistant</p>
+                    </div>
+                    
+                    <!-- Display flash messages if any -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <!-- Login form with animations -->
+                    <form method="post" novalidate>
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            {{ form.username.label(class="form-label") }}
+                            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Enter your username") }}
+                            {% for error in form.username.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), placeholder="Enter your password") }}
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            {{ form.remember_me(class="form-check-input") }}
+                            {{ form.remember_me.label(class="form-check-label") }}
+                        </div>
+                        
+                        {{ form.submit(class="btn btn-auth submit-btn") }}
+                    </form>
+                    
+                    <div class="separator">or</div>
+                    
+                    <!-- Social login buttons -->
+                    <div class="social-login">
+                        <a href="#" class="social-btn" title="Login with Google">
+                            <i class="fab fa-google"></i>
+                        </a>
+                        <a href="#" class="social-btn" title="Login with LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-btn" title="Login with GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Auth footer -->
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create animated background particles
+        const particlesContainer = document.getElementById('auth-particles');
+        const colors = ['#4361ee', '#3a0ca3', '#7209b7', '#f72585', '#4cc9f0'];
+        const particleCount = window.innerWidth < 768 ? 15 : 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('auth-particle');
+            
+            // Random size, position and color
+            const size = Math.random() * 15 + 5;
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const delay = Math.random() * 5;
+            const duration = Math.random() * 10 + 15;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}%`;
+            particle.style.top = `${posY}%`;
+            particle.style.backgroundColor = color;
+            particle.style.animationDelay = `${delay}s`;
+            particle.style.animationDuration = `${duration}s`;
+            
+            particlesContainer.appendChild(particle);
+        }
+    });
+</script>
+{% endblock %}

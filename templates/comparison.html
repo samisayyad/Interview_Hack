@@ -1,0 +1,334 @@
+{% extends "layout.html" %}
+
+{% block title %}Performance Comparison{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/comparison.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="comparison-container">
+    <div class="container">
+        <!-- Page header -->
+        <h1 class="page-title">Performance Comparison</h1>
+        <p class="page-subtitle">See how your interview performance compares to other candidates and find areas for improvement</p>
+        
+        <!-- Filters section -->
+        <div class="filter-section">
+            <h3 class="filter-title">Filter Results</h3>
+            <form class="filter-form row g-3" method="get">
+                <div class="col-md-4">
+                    <label for="interview-type" class="form-label">Interview Type</label>
+                    <select class="form-select" id="interview-type" name="type">
+                        <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All Types</option>
+                        <option value="general" {% if filter_type == 'general' %}selected{% endif %}>General</option>
+                        <option value="technical" {% if filter_type == 'technical' %}selected{% endif %}>Technical</option>
+                        <option value="behavioral" {% if filter_type == 'behavioral' %}selected{% endif %}>Behavioral</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="date-range" class="form-label">Date Range</label>
+                    <select class="form-select" id="date-range" name="range">
+                        <option value="all" {% if filter_range == 'all' %}selected{% endif %}>All Time</option>
+                        <option value="week" {% if filter_range == 'week' %}selected{% endif %}>Last Week</option>
+                        <option value="month" {% if filter_range == 'month' %}selected{% endif %}>Last Month</option>
+                        <option value="year" {% if filter_range == 'year' %}selected{% endif %}>Last Year</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Main comparison card -->
+        <div class="comparison-card">
+            <div class="comparison-card-header">
+                <h2 class="comparison-card-title">Overall Performance Ranking</h2>
+            </div>
+            <div class="comparison-card-body">
+                <p class="comparison-subtitle">Based on the average scores of all interview sessions</p>
+                
+                <div class="comparison-table-container">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>User</th>
+                                <th class="score-column">Overall</th>
+                                <th class="score-column">Speech</th>
+                                <th class="score-column">Body Language</th>
+                                <th class="score-column">Content</th>
+                                <th>Interviews</th>
+                                <th>Strengths</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in user_rankings %}
+                                <tr {% if user.is_current_user %}class="user-row"{% endif %}>
+                                    <td>
+                                        <span class="rank-badge {% if user.rank <= 3 %}rank-{{ user.rank }}{% else %}rank-other{% endif %}">
+                                            {{ user.rank }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user.username }}</td>
+                                    <td>
+                                        <span class="score-badge 
+                                            {% if user.overall_score >= 85 %}score-excellent
+                                            {% elif user.overall_score >= 75 %}score-good
+                                            {% elif user.overall_score >= 60 %}score-average
+                                            {% else %}score-needs-improvement{% endif %}">
+                                            {{ user.overall_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="score-badge 
+                                            {% if user.speech_score >= 85 %}score-excellent
+                                            {% elif user.speech_score >= 75 %}score-good
+                                            {% elif user.speech_score >= 60 %}score-average
+                                            {% else %}score-needs-improvement{% endif %}">
+                                            {{ user.speech_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="score-badge 
+                                            {% if user.body_score >= 85 %}score-excellent
+                                            {% elif user.body_score >= 75 %}score-good
+                                            {% elif user.body_score >= 60 %}score-average
+                                            {% else %}score-needs-improvement{% endif %}">
+                                            {{ user.body_score }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="score-badge 
+                                            {% if user.content_score >= 85 %}score-excellent
+                                            {% elif user.content_score >= 75 %}score-good
+                                            {% elif user.content_score >= 60 %}score-average
+                                            {% else %}score-needs-improvement{% endif %}">
+                                            {{ user.content_score }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user.interview_count }}</td>
+                                    <td>{{ user.strengths }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Performance chart card -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="comparison-card">
+                    <div class="comparison-card-header">
+                        <h2 class="comparison-card-title">Performance Comparison Chart</h2>
+                    </div>
+                    <div class="comparison-card-body">
+                        <div class="comparison-chart" id="performance-chart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="comparison-card">
+                    <div class="comparison-card-header">
+                        <h2 class="comparison-card-title">Your Stats</h2>
+                    </div>
+                    <div class="comparison-card-body">
+                        <div class="metric-indicator">
+                            <div class="metric-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div>
+                                <div class="metric-value">{{ current_user_stats.rank }}</div>
+                                <div class="metric-label">Overall Rank</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-indicator">
+                            <div class="metric-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div>
+                                <div class="metric-value">{{ current_user_stats.percentile }}%</div>
+                                <div class="metric-label">Better than % of users</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-indicator">
+                            <div class="metric-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <div class="metric-value">{{ current_user_stats.improvement }}%</div>
+                                <div class="metric-label">Improvement from first interview</div>
+                            </div>
+                        </div>
+                        
+                        <div class="metric-indicator">
+                            <div class="metric-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <div class="metric-value">{{ current_user_stats.best_area }}</div>
+                                <div class="metric-label">Your strongest area</div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-3">
+                        
+                        <p class="fw-bold text-center">How you compare to top performers:</p>
+                        <div class="progress mb-3" style="height: 10px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ current_user_stats.speech_vs_top }}%;" aria-valuenow="{{ current_user_stats.speech_vs_top }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="small text-light">Your speech is {{ current_user_stats.speech_vs_top }}% of top performers</p>
+                        
+                        <div class="progress mb-3" style="height: 10px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ current_user_stats.body_vs_top }}%;" aria-valuenow="{{ current_user_stats.body_vs_top }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="small text-light">Your body language is {{ current_user_stats.body_vs_top }}% of top performers</p>
+                        
+                        <div class="progress mb-3" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ current_user_stats.content_vs_top }}%;" aria-valuenow="{{ current_user_stats.content_vs_top }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <p class="small text-light">Your content is {{ current_user_stats.content_vs_top }}% of top performers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Improvement recommendations -->
+        <div class="improvement-section">
+            <h2 class="improvement-title">Your Personalized Improvement Plan</h2>
+            <p class="text-light mb-4">Based on your performance compared to top candidates, here's what you should focus on:</p>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <ul class="improvement-list">
+                        {% for improvement in improvement_recommendations %}
+                            <li class="improvement-item">
+                                <h4 class="improvement-category">{{ improvement.category }}</h4>
+                                <p class="improvement-text">{{ improvement.text }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <div class="comparison-card h-100">
+                        <div class="comparison-card-header">
+                            <h3 class="comparison-card-title h5">What Top Performers Do Differently</h3>
+                        </div>
+                        <div class="comparison-card-body">
+                            <ul class="list-group list-group-flush bg-transparent">
+                                {% for practice in top_performer_practices %}
+                                    <li class="list-group-item bg-transparent text-light">
+                                        <i class="fas fa-check-circle text-success me-2"></i> {{ practice }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Performance comparison chart
+        const ctx = document.getElementById('performance-chart').getContext('2d');
+        
+        const performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Overall', 'Speech', 'Body Language', 'Content'],
+                datasets: [
+                    {
+                        label: 'Your Score',
+                        data: [
+                            {{ current_user_scores.overall }}, 
+                            {{ current_user_scores.speech }}, 
+                            {{ current_user_scores.body }}, 
+                            {{ current_user_scores.content }}
+                        ],
+                        backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                        borderColor: 'rgba(67, 97, 238, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Average Score',
+                        data: [
+                            {{ average_scores.overall }}, 
+                            {{ average_scores.speech }}, 
+                            {{ average_scores.body }}, 
+                            {{ average_scores.content }}
+                        ],
+                        backgroundColor: 'rgba(170, 170, 170, 0.7)',
+                        borderColor: 'rgba(170, 170, 170, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Top Performers',
+                        data: [
+                            {{ top_scores.overall }}, 
+                            {{ top_scores.speech }}, 
+                            {{ top_scores.body }}, 
+                            {{ top_scores.content }}
+                        ],
+                        backgroundColor: 'rgba(32, 191, 85, 0.7)',
+                        borderColor: 'rgba(32, 191, 85, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
+        
+        // Animate bars on load
+        setTimeout(() => {
+            document.querySelectorAll('.animated-bar').forEach(bar => {
+                bar.style.height = bar.getAttribute('data-height') + '%';
+            });
+        }, 500);
+    });
+</script>
+{% endblock %}

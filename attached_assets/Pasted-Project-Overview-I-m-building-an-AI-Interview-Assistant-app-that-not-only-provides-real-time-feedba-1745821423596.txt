@@ -1,0 +1,97 @@
+Project Overview: I’m building an AI Interview Assistant app that not only provides real-time feedback on speech and body language but also includes an Interview Chatbot to assist users with interview-related queries. The chatbot should help users by answering common questions, providing tips, and resolving doubts during the interview preparation process. The app should feature dynamic interaction, real-time AI-driven feedback, and a professional UI/UX.
+
+Required Components:
+
+Backend (Flask):
+
+Create a Flask backend that handles routes for the application:
+
+Landing Page Route (/): Displays a welcoming page with a "Start Interview" button.
+
+Interview Feedback Route (/feedback): Displays results for speech analysis, body language feedback, and NLP-based suggestions.
+
+Chatbot Route (/chatbot): Serves as the route where users can interact with the Interview Chatbot.
+
+The Chatbot should be able to handle interview-related questions, provide tips for interviews, and offer personalized advice based on common interview queries.
+
+Integrate AI models for speech analysis (Wav2Vec/DeepSpeech), body language analysis (MediaPipe/OpenPose), and NLP (GPT/BERT) for feedback.
+
+For the chatbot, integrate a dialogue management system (using GPT-3 or another chatbot model) to handle and respond to user queries regarding interview preparation.
+
+Interview Chatbot:
+
+The Interview Chatbot should be able to:
+
+Answer common interview-related questions (e.g., “How do I answer behavioral interview questions?”).
+
+Provide tips and suggestions on improving interview performance (e.g., “Make eye contact during the interview”).
+
+Allow users to ask open-ended questions about interview topics (e.g., “What’s the best way to prepare for a technical interview?”).
+
+Handle user input and return contextually appropriate responses.
+
+Integrate seamlessly with the AI Interview Assistant feedback, e.g., answering follow-up questions based on the speech and body analysis results.
+
+Frontend Design:
+
+The app should be dynamic and modern, with smooth interactions and animations.
+
+The Interview Chatbot should be easily accessible on the homepage or feedback page where users can interact with the chatbot for assistance.
+
+Ensure the design is user-friendly, with chat-like functionality, where users can input questions or concerns and receive real-time responses from the chatbot.
+
+Include chatbot UI elements like:
+
+Text input field for users to type questions.
+
+Chat display area showing user queries and chatbot responses.
+
+A button or prompt to initiate the chatbot conversation.
+
+Interactive Feedback Dashboard:
+
+After the interview, users should receive feedback:
+
+Speech Feedback (e.g., tone, fluency, pronunciation)
+
+Body Language Feedback (e.g., posture, gestures, eye contact)
+
+NLP Feedback (e.g., content, structure, relevance)
+
+Show progress bars and scorecards (e.g., Speech: 78%, Body: 65%, NLP: 90%).
+
+Provide dynamic tips and suggestions (e.g., “Improve your tone variation” or “Maintain better posture”).
+
+The dashboard should also offer an option to ask the chatbot for more personalized tips or further clarification on the feedback.
+
+Backend Chatbot Integration:
+
+Integrate a chatbot model (GPT-3, GPT-4, or similar) for dynamic responses.
+
+The chatbot should use intent recognition to understand user questions and provide contextually relevant answers.
+
+Store chat history temporarily for a more personalized experience across sessions (e.g., allowing the chatbot to recall previous user queries).
+
+The chatbot should provide interview tips, mock questions, and personalized feedback based on the user’s past conversations and performance data.
+
+Additional Features:
+
+Speech and Body Language Analysis: Integrate real-time analysis to assess the user’s performance during the interview (using Wav2Vec, MediaPipe, OpenPose).
+
+Chatbot NLP: Integrate NLP-based feedback on the user's responses, helping them improve their content delivery.
+
+Data Storage: Store feedback and user interactions to help the chatbot refine its responses over time.
+
+What I Need:
+
+Full Flask backend code to handle the different routes (landing page, interview feedback, chatbot).
+
+AI models integrated for speech analysis, body language analysis, and chatbot interaction.
+
+Interactive feedback dashboard for displaying results.
+
+Chatbot functionality for users to ask interview-related questions and get helpful responses.
+
+Real-time interaction between users and the chatbot, along with dynamic responses.
+
+Ensure smooth user experience, interactive animations, and seamless chatbot integration into the interface.

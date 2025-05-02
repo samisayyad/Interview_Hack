@@ -1,0 +1,274 @@
+{% extends "layout.html" %}
+
+{% block title %}Interview Chatbot{% endblock %}
+
+{% block head %}
+<style>
+    .chat-container {
+        height: 500px;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: var(--bs-dark);
+        border-radius: 8px;
+    }
+    .chat-message {
+        margin-bottom: 20px;
+        max-width: 80%;
+    }
+    .user-message {
+        margin-left: auto;
+        background-color: var(--bs-primary);
+        border-radius: 12px 12px 2px 12px;
+        padding: 12px 15px;
+        color: white;
+    }
+    .bot-message {
+        margin-right: auto;
+        background-color: var(--bs-dark);
+        border: 1px solid var(--bs-gray-700);
+        border-radius: 12px 12px 12px 2px;
+        padding: 12px 15px;
+    }
+    .message-time {
+        font-size: 0.7rem;
+        color: var(--bs-gray-600);
+        margin-top: 5px;
+        text-align: right;
+    }
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+    .user-avatar {
+        background-color: var(--bs-primary);
+        color: white;
+    }
+    .bot-avatar {
+        background-color: var(--bs-gray-800);
+        color: var(--bs-light);
+    }
+    .message-row {
+        display: flex;
+        margin-bottom: 20px;
+        align-items: flex-start;
+    }
+    .message-content {
+        margin: 0 10px;
+        max-width: 80%;
+    }
+    .input-container {
+        margin-top: 20px;
+    }
+    .suggestions {
+        margin-top: 30px;
+    }
+    .suggestion-btn {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    .typing-indicator {
+        display: none;
+        padding: 12px 15px;
+        background-color: var(--bs-dark);
+        border: 1px solid var(--bs-gray-700);
+        border-radius: 12px;
+        width: fit-content;
+    }
+    .typing-indicator span {
+        height: 8px;
+        width: 8px;
+        background-color: var(--bs-gray-500);
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 2px;
+        animation: typing 1.4s infinite both;
+    }
+    .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+    .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+    @keyframes typing {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Interview Preparation Chatbot</h1>
+            <p class="text-center lead">Ask questions, get tips, and improve your interview skills with our AI assistant.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="chat-container" id="chat-container">
+                        <!-- Welcome message -->
+                        <div class="message-row">
+                            <div class="avatar bot-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="message-content">
+                                <div class="bot-message">
+                                    Hello! I'm your Interview Assistant. I can help you prepare for interviews by answering questions, providing tips, and offering feedback. What would you like help with today?
+                                </div>
+                                <div class="message-time">Just now</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Previous chat messages will be loaded here -->
+                        {% for message in chat_history %}
+                            {% if message.role == 'user' %}
+                                <div class="message-row justify-content-end">
+                                    <div class="message-content">
+                                        <div class="user-message">
+                                            {{ message.content }}
+                                        </div>
+                                        <div class="message-time">You</div>
+                                    </div>
+                                    <div class="avatar user-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="message-row">
+                                    <div class="avatar bot-avatar">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="message-content">
+                                        <div class="bot-message">
+                                            {{ message.content }}
+                                        </div>
+                                        <div class="message-time">Assistant</div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <!-- Typing indicator -->
+                        <div class="typing-indicator" id="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="input-container">
+                        <form id="chat-form" class="d-flex">
+                            <input type="text" id="user-input" class="form-control me-2" placeholder="Type your question here..." required>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="suggestions">
+                        <h6>Suggested Questions:</h6>
+                        <button class="btn btn-sm btn-outline-secondary suggestion-btn" data-question="How should I prepare for behavioral interview questions?">Behavioral questions</button>
+                        <button class="btn btn-sm btn-outline-secondary suggestion-btn" data-question="What should I wear to an interview?">Interview attire</button>
+                        <button class="btn btn-sm btn-outline-secondary suggestion-btn" data-question="How do I answer 'Tell me about yourself'?">Tell me about yourself</button>
+                        <button class="btn btn-sm btn-outline-secondary suggestion-btn" data-question="How can I improve my body language?">Body language tips</button>
+                        <button class="btn btn-sm btn-outline-secondary suggestion-btn" data-question="What questions should I ask the interviewer?">Questions to ask</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button id="clear-chat" class="btn btn-outline-danger">
+                    <i class="fas fa-trash me-2"></i> Clear Chat History
+                </button>
+                <a href="/interview" class="btn btn-success ms-2">
+                    <i class="fas fa-play-circle me-2"></i> Start Practice Interview
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fas fa-lightbulb text-warning me-2"></i> Interview Tips</h4>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Research the company</h6>
+                                    <p class="text-muted mb-0 small">Understand the company's mission, values, and recent news</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Practice with the STAR method</h6>
+                                    <p class="text-muted mb-0 small">Situation, Task, Action, Result for behavioral questions</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Prepare questions to ask</h6>
+                                    <p class="text-muted mb-0 small">Show your interest by preparing thoughtful questions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Mind your body language</h6>
+                                    <p class="text-muted mb-0 small">Maintain eye contact and good posture throughout</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Follow up after the interview</h6>
+                                    <p class="text-muted mb-0 small">Send a thank-you email within 24 hours</p>
+                                </div>
+                            </div>
+                            <div class="d-flex mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Practice, practice, practice</h6>
+                                    <p class="text-muted mb-0 small">Use our AI interview assistant to improve your skills</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+{% endblock %}
